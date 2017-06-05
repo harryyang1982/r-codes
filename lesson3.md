@@ -1,3 +1,14 @@
+---
+title: "lesson 3"
+author: "Harry Yang"
+date: "2017년 6월 5일"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
 # 벡터와 연산자
 
 ## 벡터 만들기
@@ -68,7 +79,7 @@ y
 y <- c("A", 1, 2) ###문자일까 숫자일까
 y
 
-## z <- y+1 ###문자와 숫자의 합은 오류
+z <- y+1 ###문자와 숫자의 합은 오류
 
 ## 비교 연산자
 
@@ -322,6 +333,8 @@ library(xlsx)
 ## 엑셀로 저장하기 
 write.xlsx(quakes, "quakes.xlsx")
 
+write.xlsx
+
 ## 웹사이트 데이터 파일 읽기
 
 url <- "https://vincentarelbundock.github.io/Rdatasets/csv/datasets/Titanic.csv"
@@ -336,3 +349,5 @@ inch_to_cm <- function(inch) {
 }
 
 inch_to_cm(3)
+
+

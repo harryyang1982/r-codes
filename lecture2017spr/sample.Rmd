@@ -1,0 +1,105 @@
+---
+title: "2017년 1학기 기말고사"
+author: "양승훈"
+date: '2017 6 20 '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 인사말
+
+한 학기 동안 엑셀과 R을 배우느라 고생이 많았습니다. 이번 기말고사를 통해 자신의 늘어난 실력과 자신감을 확인할 수 있길 바랍니다.
+
+## 시험 안내
+
+이번 시험은 아래의 1) 기본형 10문제(각 5점)와 2) 심화형 5문제(각 10점)으로 구성되어 있습니다. 주어진 시간은 16:00~17:00(1시간)입니다. 답안은 R코드로 "정민주_기말고사.r" 방식으로 저장해서 제출하면 됩니다. 답안 제출을 위해서는 **tidyverse** 패키지를 설치하고 로드해야 합니다. 단답식 1-3번을 제외한 모든 답안은 그대로 실행이 가능해야 합니다. 그렇기 때문에 반드시 코드 형식으로 답안을 작성할 것.
+
+### 답안 작성 예시 
+
+ ### 1 번 문제
+
+head(mpg)
+
+ ###2 번 문제
+
+library(tidyverse)
+
+## 기본형(단답식) 문제
+
+1. R에서 텍스트 파일을 로드하는 명령어는? (대소문자 주의)
+2. R에서 내장 데이터를 로드하는 명령어는?
+3. R에서 점을 그릴 수 있는 기본 함수(ggplot 아님)와 인자를 입력하시오. **cars**의 dist 변수를 x로, speed 변수를 y로 할 것. (2가지 방법 모두 입력할 것)
+4. 아래 **mpg** 데이터 모든 변수의 기초 통계값을 확인하는 명령어를 입력하시오. ()
+(만약 **cars** 를 확인한다면 명령어(**cars**) 방식으로 입력하시오. tidyverse 패키지를 로드하여야 mpg 데이터 사용 가능.)
+
+```{r mpg}
+library(tidyverse)
+head(mpg)
+```
+
+5. **mpg** 데이터 중 cyl 변수 기준으로 cty 변수의 합을 표로 구현하는 명령어와 인자를 입력해 실행 가능하게 하시오.
+
+6. **mpg** 데이터 class 변수의 값에 따른 개수를 표로 구현하는 명령어와 인자를 입력해 실행 가능하게 하시오.
+
+7. **mpg** 데이터의 hwy 변수를 자동차 제작사에 따라 박스 플롯으로 그려내는 명령어와 인자를 입력해 실행 가능하게 하시오. (ggplot이 아닌 기본 명령어로 할 것)
+
+8. 아래의 **iris** 데이터 중 Species가 'setosa'만 추려내는 명령어는? (아무 방법이나 상관 없음)
+
+```{r iris}
+data(iris)
+head(iris)
+```
+
+9. **iris** 데이터 각 변수의 '속성'을 파악하는 명령어를 입력하시오.
+10. **iris** 데이터 마지막 6행을 보여주는 명령어를 입력하시오.
+
+
+## 심화 문제 (ggplot 그래프 그리기)
+
+11-13. 아래 3개의 그래프와 같은 모양이 나오도록 **mpg** 데이터를 활용해 그래프를 만드는 ggplot 코드를 각각 작성하시오. (각 10점, 힌트 : 참조 변수는 displ, hwy, class)
+
+```{r mpg2, echo=FALSE}
+library(tidyverse)
+data(mpg)
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point()
+ggplot(mpg, aes(displ, hwy, color=class)) +
+  geom_point()
+ggplot(mpg, aes(x=displ, y=hwy)) +
+  geom_point(aes(color=class)) +
+  geom_smooth(aes(group=drv), se=F)
+```
+
+14-15 아래 2개의 그래프와 같은 모양이 나오도록 **airquality** 데이터를 활용해 날짜별 바람의 정도를 파악할 수 있는 선 그래프를 그리는 ggplot 코드를 각각 작성하시오. (각 10점, 힌트 : MonthDay 변수를 만들고 나서 작업하시오. 참조 변수는 Month, Day, Wind. 두 번째 그래프는 5월과 8월만 포함하여 Day를 변수로 그림.)
+
+```{r airquality, echo=FALSE}
+library(tidyverse)
+data(airquality)
+airquality$MonthDay <- as.Date(paste(as.numeric(airquality$Month), airquality$Day, "1973", sep="-"), format="%m-%d-%Y")
+ggplot(airquality) + geom_line(aes(x=MonthDay, y=Wind))
+
+ggplot(airquality[airquality$Month %in% c(5,8),], aes(x=Day, y=Wind, group=Month, color=Month)) + geom_line(lwd=2)
+
+```
+
+## 보너스 문제 (이 문제를 풀어서 함께 제출하면 중간고사 점수에 20점 추가)
+
+16-17. 아래의 그래프와 같은 모양이 나오도록 함께 첨부한 **seoul_dust.csv** 데이터를 활용하여 서울의 미세먼지 정도를 측정할 수 있는 두 개의 그래프를 그리는 ggplot 코드를 각각 작성하시오. (각 10점. seoul_dust.csv는 seoul 데이터 프레임에 저장할 것.)
+
+```{r seoul_dust, echo=FALSE}
+library(tidyverse)
+seoul <- read_csv("seoul_dust.csv")
+
+ggplot(data=seoul[seoul$place %in% c("강남구", "마포구", "중랑구"),]) +
+  geom_line(aes(x=date2, y=TinyDust, group=place, color=place)) +
+  geom_hline(yintercept=50)
+
+ggplot(data=seoul[seoul$TinyDust > 50,]) +
+  geom_line(aes(x=date2, y=TinyDust, group=place, color=place)) +
+  geom_hline(yintercept=50)
+
+```
+

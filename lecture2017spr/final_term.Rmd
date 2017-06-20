@@ -3,9 +3,9 @@ title: "2017년 1학기 기말고사"
 author: "양승훈"
 date: '2017 6 20 '
 output:
+  word_document: default
   pdf_document: default
   html_document: default
-  word_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -18,7 +18,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## 시험 안내
 
-이번 시험은 아래의 1) 기본형 10문제(각 5점)와 2) 심화형 5문제(각 10점)으로 구성되어 있습니다. 주어진 시간은 16:00~17:00(1시간)입니다. 답안은 R코드로 "정민주_기말고사.r" 방식으로 저장해서 제출하면 됩니다. 답안 제출을 위해서는 **tidyverse** 패키지를 설치하고 로드해야 합니다. 단답식 1-3번을 제외한 모든 답안은 그대로 실행이 가능해야 합니다. 그렇기 때문에 반드시 코드 형식으로 답안을 작성할 것.
+이번 시험은 아래의 1) 기본형 10문제(각 5점)와 2) 심화형 5문제(각 10점)으로 구성되어 있습니다. 주어진 시간은 16:00~17:00(1시간)입니다. 답안은 R코드로 "정민주_기말고사.r" 방식으로 저장해서 제출하면 됩니다. 답안 제출을 위해서는 **tidyverse** 패키지를 설치하고 로드해야 합니다. 단답식 1-3번을 제외한 모든 답안은 그대로 실행이 가능해야 합니다. 그렇기 때문에 반드시 코드 형식으로 답안을 작성할 것. 모든 답은 부분 점수가 있으니 포기하지 마세요!
 
 ### 답안 작성 예시 
 
@@ -90,7 +90,7 @@ ggplot(airquality[airquality$Month %in% c(5,8),], aes(x=Day, y=Wind, group=Month
 
 ## 보너스 문제 (이 문제를 풀어서 함께 제출하면 중간고사 점수에 20점 추가)
 
-16-17. 아래의 그래프와 같은 모양이 나오도록 함께 첨부한 **seoul_dust.csv** 데이터를 활용하여 서울의 미세먼지 정도를 측정할 수 있는 두 개의 그래프를 그리는 ggplot 코드를 각각 작성하시오. 첫 번째 그래프는 강남구, 마포구, 중랑구 장소만 추려서 선그래프를 그린 것이고, 두 번째 그래프는 tinydust가 50이상인 것만 추려서 그린 선그래프임. (각 10점. seoul_dust.csv는 seoul 데이터 프레임에 저장할 것.)
+16-17. 아래의 그래프와 같은 모양이 나오도록 함께 첨부한 **seoul_dust.csv** 데이터를 활용하여 서울의 미세먼지 정도를 측정할 수 있는 두 개의 그래프를 그리는 ggplot 코드를 각각 작성하시오. 첫 번째 그래프는 강남구, 마포구, 중랑구 장소만 추려서 선그래프를 그린 것이고, 두 번째 그래프는 tinydust가 100초과인 것만 추려서 그린 선그래프임. (각 10점. seoul_dust.csv는 seoul 데이터 프레임에 저장할 것.)
 
 ```{r seoul_dust, echo=FALSE}
 library(tidyverse)
@@ -100,9 +100,7 @@ ggplot(data=seoul[seoul$place %in% c("강남구", "마포구", "중랑구"),]) +
   geom_line(aes(x=date2, y=TinyDust, group=place, color=place)) +
   geom_hline(yintercept=50)
 
-ggplot(data=seoul[seoul$TinyDust > 50,]) +
-  geom_line(aes(x=date2, y=TinyDust, group=place, color=place)) +
-  geom_hline(yintercept=50)
-
+ggplot(data=seoul[seoul$TinyDust > 100,]) +
+  geom_line(aes(x=date2, y=TinyDust, group=place, color=place))
 ```
 

@@ -293,3 +293,124 @@ base + scale_x_date(
 
 # 6.6.2 Color
 
+# 6.6.2.1 Continuous
+
+erupt <- ggplot(faithfuld, aes(waiting, eruptions, fill=density)) +
+  geom_raster() +
+  scale_x_continuous(NULL, expand=c(0,0)) +
+  scale_y_continuous(NULL, expand=c(0,0)) +
+  theme(legend.position = "none")
+
+erupt
+
+erupt + scale_fill_gradient(low = "white", high="black")
+erupt + scale_fill_gradient(
+  low = munsell::mnsl("5G 9/2"),
+  high = munsell::mnsl("5G 6/8")
+)
+
+mid <- median(faithfuld$density)
+erupt + scale_fill_gradient2(midpoint=mid)
+
+erupt + scale_fill_gradientn(colors = terrain.colors(7))
+erupt + scale_fill_gradientn(colors = colorspace::heat_hcl(7))
+erupt + scale_fill_gradientn(colors = colorspace::diverge_hcl(7))
+
+erupt + scale_fill_distiller()
+erupt + scale_fill_distiller(palette = "RdPu")
+erupt + scale_fill_distiller(palette = "YlOrBr")
+
+df <- data.frame(x = 1, y= 1:5, z= c(1,3,2, NA, 5))
+p <- ggplot(df, aes(x, y)) + geom_tile(aes(fill = z), size=5)
+p
+p + scale_fill_gradient(na.value=NA)
+p + scale_fill_gradient(low = "black", high = "white", na.value = "red")
+
+# 6.6.2.2 Discrete
+
+df <- data.frame(x = c("a", "b", "c", "d"), y = c(3,4,1,2))
+bars <- ggplot(df, aes(x, y, fill=x)) +
+  geom_bar(stat = "identity") +
+  labs(x = NULL, y = NULL) +
+  theme(legend.position = "none")
+bars
+
+bars + scale_fill_hue(c=40)
+bars + scale_fill_hue(h = c(180, 300))
+
+bars + scale_fill_brewer(palette = "Set1")
+bars + scale_fill_brewer(palette = "Set2")
+bars + scale_fill_brewer(palette = "Accent")
+
+bars + scale_fill_grey()
+bars + scale_fill_grey(start = 0.5, end = 1)
+bars + scale_fill_grey(start = 0, end = 0.5)
+
+install.packages("wesanderson")
+library(wesanderson)
+bars + scale_fill_manual(values = wes_palette("GrandBudapest"))
+bars + scale_fill_manual(values = wes_palette("Zissou"))
+bars + scale_fill_manual(values = wes_palette("Rushmore"))
+
+df <- data.frame(x = 1:3 + runif(30), y= runif(30), z=c("a", "b", "c"))
+point <- ggplot(df, aes(x, y)) +
+  geom_point(aes(color=z)) +
+  theme(legend.position = "none") +
+  labs(x = NULL, y = NULL)
+point + scale_color_brewer(palette = "Set1")
+point + scale_color_brewer(palette = "Set2")
+point + scale_color_brewer(palette = "Pastel1")
+
+df <- data.frame(x = 1:3, y = 3:1, z = c("a", "b", "c"))
+area <- ggplot(df, aes(x, y)) +
+  geom_bar(aes(fill=z), stat = "identity") +
+  theme(legend.position = "none") +
+  labs(x= NULL, y= NULL)
+area + scale_fill_brewer(palette = "Set1")
+area + scale_fill_brewer(palette = "Set2")
+area + scale_fill_brewer(palette = "Pastel1") #밝을 수록 점 그래프에서 좋고 희미할 수록 영역형에서 좋다
+
+# 6.6.3 The Manual Discrete Scale
+
+plot <- ggplot(msleep, aes(brainwt, bodywt)) +
+  scale_x_log10() +
+  scale_y_log10()
+plot +
+  geom_point(aes(color=vore)) +
+  scale_color_manual(
+    values = c("red", "orange", "green", "blue"),
+    na.value = "grey50"
+  )
+
+colors <- c(
+  carni = "red",
+  insecti = "orange",
+  herbi = "green",
+  omni = "blue"
+)
+plot +
+  geom_point(aes(color = vore)) +
+  scale_color_manual(values = colors)
+
+huron <- data.frame(year = 1875:1972, level = as.numeric(LakeHuron))
+
+ggplot(huron, aes(year)) +
+  geom_line(aes(y = level + 5, color = "above")) +
+  geom_line(aes(y = level - 5, color = "below"))
+
+ggplot(huron, aes(year)) +
+  geom_line(aes(y = level + 5, color = "above")) +
+  geom_line(aes(y = level - 5, color = "below")) +
+  scale_color_manual("Direction",
+                     values = c("above" = "red", "below" = "blue")
+  )
+
+# 6.6.4 The Identity Scale
+
+head(luv_colours)
+ggplot(luv_colours, aes(u, v)) +
+  geom_point(aes(color = col), size = 3) +
+  scale_color_identity() +
+  coord_equal()
+
+# 6.6.5 Exercises

@@ -1,11 +1,11 @@
 ---
-title: "2017년 1학기 기말고사"
-author: "양승훈"
+title: "2017<eb>뀈 1<ed>븰湲<b0> 湲곕쭚怨좎궗"
+author: "<ec>뼇<ec>듅<ed>썕"
 date: '2017 6 20 '
 output:
-  word_document: default
-  pdf_document: default
   html_document: default
+  pdf_document: default
+  word_document: default
 ---
 
 ```{r setup, include=FALSE}

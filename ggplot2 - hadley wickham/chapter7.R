@@ -7,6 +7,8 @@ base <- ggplot(mpg2, aes(displ, hwy)) +
   xlab(NULL) +
   ylab(NULL)
 
+base
+
 # 7.2.1
 
 base + facet_wrap(~class, ncol=3)
@@ -121,8 +123,126 @@ diagg
 mpg3 <- filter(mpg, class!= "2seater")
 mpg2 <- select(mpg3, -class)
 
+# 7.2.7.4
 ggplot(mpg3, aes(displ, hwy)) +
   geom_point() +
   geom_smooth(data=mpg2, aes(displ, hwy), se=F) +
   facet_wrap(~class)
 
+# 7.4.1 Zooming into a Plot with coord_cartesian()
+
+base <- ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
+  geom_smooth()
+
+base
+base + scale_x_continuous(limits = c(5,7))
+base + coord_cartesian(xlim=c(5,7))
+
+ggplot(mpg, aes(displ, cty)) +
+  geom_point() +
+  geom_smooth()
+
+ggplot(mpg, aes(cty, displ)) +
+  geom_point() +
+  geom_smooth()
+
+ggplot(mpg, aes(displ, cty)) +
+  geom_point() +
+  geom_smooth() +
+  coord_flip()
+
+# 7.5 Non-linear Coordinate Systems
+
+rect <- data.frame(x=50, y=50)
+line <- data.frame(x=c(1,200), y=c(100,1))
+base <- ggplot(mapping=aes(x,y)) +
+  geom_tile(data=rect, aes(width=50, height=50)) +
+  geom_line(data=line) +
+  xlab(NULL) + ylab(NULL)
+
+base
+base + coord_polar("x")
+base + coord_polar("y")
+
+base + coord_flip()
+base + coord_trans(y = "log10")
+base + coord_fixed()
+
+df <- data.frame(r=c(0,1), theta=c(0, 3/2*pi))
+ggplot(df, aes(r, theta)) +
+  geom_line() +
+  geom_point(size=2, color="red")
+
+interp <- function(rng, n) {
+  seq(rng[1], rng[2], length=n)
+}
+
+munched <- data.frame(
+  r=interp(df$r, 15),
+  theta = interp(df$theta, 15)
+)
+
+ggplot(munched, aes(r, theta)) +
+  geom_line() +
+  geom_point(size = 2, color="red")
+
+transformed <- transform(munched,
+                         x=r*sin(theta),
+                         y=r*cos(theta))
+
+ggplot(transformed, aes(x,y)) +
+  geom_point(size=2, color="red") +
+  coord_fixed()
+
+# 7.5.1 Trnasformations with coord_trans()
+
+base <- ggplot(diamonds, aes(carat, price)) +
+  stat_bin2d() +
+  geom_smooth(method="lm") +
+  xlab(NULL) +
+  ylab(NULL) +
+  theme(legend.position="none")
+
+base
+
+base +
+  scale_x_log10() +
+  scale_y_log10()
+
+pow10 <- scales::exp_trans(10)
+base +
+  scale_x_log10() +
+  scale_y_log10() +
+  coord_trans(x=pow10, y=pow10)
+
+# 7.5.2 Polar Coordinates with coord_polar()
+
+base <- ggplot(mtcars, aes(factor(1), fill=factor(cyl))) +
+  geom_bar(width=1) +
+  theme(legend.position="none") +
+  scale_x_discrete(NULL, expand=c(0,0)) +
+  scale_y_continuous(NULL, expand=c(0,0))
+
+base
+base + coord_polar(theta="y")
+base + coord_polar()
+
+# 7.5.3 Map Projections with coord_map()
+
+nzmap <- ggplot(map_data("nz"), aes(long, lat, group=group)) +
+  geom_polygon(fill = "white", color="black") +
+  xlab(NULL) + ylab(NULL)
+
+nzmap
+nzmap + coord_quickmap()
+
+world <- map_data("world")
+worldmap <- ggplot(world, aes(long, lat, group=group)) +
+  geom_path() +
+  scale_y_continuous(NULL, breaks = (-2:3) * 30, labels = NULL) +
+  scale_x_continuous(NULL, breaks = (-4:4) * 45, labels = NULL)
+
+worldmap + coord_map()
+worldmap + coord_map("ortho")
+worldmap + coord_map("stereographic")

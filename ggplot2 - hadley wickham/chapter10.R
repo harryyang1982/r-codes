@@ -178,6 +178,7 @@ by_clarity %>%
   geom_point(aes(size = n))
 
 data(Batting, package = "Lahman")
+
 batters <- Batting %>% 
   filter(AB > 0)
 
@@ -204,3 +205,116 @@ ba %>%
   ggplot(aes(ab, ba)) +
   geom_bin2d() +
   geom_smooth()
+
+# 10.4.3 Exercises
+
+data(movies, package = "ggplot2movies")
+
+glimpse(movies)
+
+#1
+movies %>% 
+  group_by(year) %>% 
+  summarise(budget.pct=sum(is.na(budget) / (sum(is.na(budget)+sum(!is.na(budget)))) * 100)) %>% 
+  ggplot(aes(year, budget.pct)) +
+  geom_col()
+
+#2
+movies %>% 
+  group_by(year) %>% 
+  summarise(mean_length = mean(length, na.rm=T)) %>% 
+  ggplot(aes(year, mean_length)) +
+  geom_col() +
+  geom_smooth(method='glm')
+
+#3
+diamonds %>% 
+  group_by(cut) %>% 
+  count()
+
+diamonds %>% 
+  group_by(color) %>% 
+  count()
+
+diamonds %>% 
+  group_by(clarity) %>% 
+  count()
+
+diamonds %>% 
+  group_by(cut) %>% 
+  summarise(mean_price = mean(price)) %>% 
+  ggplot(aes(cut, mean_price)) +
+  geom_col()
+
+glimpse(diamonds)
+
+diamonds %>% 
+  group_by(cut) %>% 
+  summarise(mean_size = mean(carat)) %>% 
+  ggplot(aes(cut, mean_size)) +
+  geom_col()
+
+# 4
+
+diamonds %>% 
+  mutate(carat_group = cut(carat, (max(carat)-min(carat))/0.1)) %>% 
+  ggplot(aes(carat_group, carat)) +
+  geom_bar(stat="identity")
+
+diamonds %>% 
+  ggplot(aes(carat)) +
+  geom_histogram(binwidth=0.1)
+
+Batting %>% 
+  filter(AB > 200) %>% 
+  group_by(playerID, AB) %>% 
+  summarise(avg=sum(H, na.rm=T)/sum(AB, na.rm=T)) %>% 
+  ggplot(aes(AB, avg)) +
+  geom_col()
+
+# 10.5 Transformation Pipelines
+
+cut_depth <- group_by(diamonds, cut, depth)
+cut_depth <- summarise(cut_depth, n=n())
+cut_depth <- filter(cut_depth, depth > 55, depth < 70)
+cut_depth <- mutate(cut_depth, prop=n/sum(n))
+
+cut_depth
+
+mutate(
+  filter(
+    summarise(
+      group_by(
+        diamonds,
+        cut,
+        depth
+      ), n= n()
+    ), 
+    depth > 55, 
+    depth < 70
+  ), 
+  prop=n/sum()
+)
+
+cut_depth <- diamonds %>% 
+  group_by(cut, depth) %>% 
+  summarise(n=n()) %>% 
+  filter(depth > 55, depth < 70) %>% 
+  mutate(prop = n / sum(n))
+
+# 10.5.1 Exercise
+
+library(magrittr)
+x <- runif(100)
+x %>% 
+  subtract(mean(.)) %>% 
+  raise_to_power(2) %>% 
+  mean() %>% 
+  sqrt()
+
+k <- Batting %>% 
+  group_by(yearID, playerID) %>% 
+  mutate(avg = H/AB) %>% 
+  filter(AB > 0, G > 100) %>% 
+  summarise(avg=mean(avg, na.rm=T)) %>% 
+  arrange(desc(avg, sd.avg))

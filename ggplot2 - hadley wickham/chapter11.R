@@ -181,11 +181,11 @@ extreme <- txhousing %>%  ungroup() %>%
 
 # 11.5.1 Exercises
 
-# 3
-
 ggplot(extreme, aes(month, log(sales))) +
   geom_line(aes(group = year)) +
   facet_wrap(~city)
+
+# 3
 
 models2 <- txhousing %>% 
   group_by(city) %>% 
@@ -199,3 +199,89 @@ model_sum2 <- models2 %>% glance(mod)
 ggplot(model_sum2, aes(r.squared, reorder(city, r.squared))) +
   geom_point()
 
+extreme <- txhousing %>%  ungroup() %>% 
+  filter(city %in% c(top3, bottom3), !is.na(sales)) %>% 
+  mutate(city = factor(city, c(top3, bottom3)))
+
+ggplot(txhousing, aes(month, log(sales))) +
+  geom_line(aes(group = year)) +
+  facet_wrap(~city)
+
+# 11.6. Coefficient Model Summaries
+
+library(broom)
+
+coefs <- models %>% 
+  tidy(mod)
+coefs
+
+months <- coefs %>% 
+  filter(grepl("factor", term)) %>% 
+  extract(term, "month", "(\\d+)", convert=T)
+months
+
+months %>% 
+  ggplot(aes(month, 2 ^ estimate)) +
+  geom_line(aes(group=city))
+
+coef_sum <- months %>% 
+  group_by(city) %>% 
+  summarise(max = max(estimate))
+
+coef_sum %>% 
+  ggplot(aes(2 ^ max, reorder(city, max))) +
+  geom_point()
+
+##11.6.1 Exercises
+
+coef_sum_min <- coef_sum %>% 
+  arrange(max^2) %>% 
+  head(3)
+
+coef_sum_max <- coef_sum %>% 
+  arrange(desc(max^2)) %>% 
+  head(3)
+
+coef_sum_tot <- rbind(coef_sum_max, coef_sum_min)
+coef_sum_tot
+
+coef_sum_tot %>% 
+  ggplot(aes(2^max, reorder(city, max))) +
+  geom_point()
+
+# 11.7 Observation Data
+
+obs_sum <- models %>% 
+  augment(mod)
+
+obs_sum
+
+obs_sum %>% 
+  ggplot(aes(.std.resid)) +
+  geom_histogram(binwidth = 0.1)
+
+obs_sum %>% 
+  ggplot(aes((abs(.std.resid)))) +
+  geom_histogram(binwidth = 0.1)
+
+obs_sum %>% 
+  filter(abs(.std.resid) > 2) %>% 
+  group_by(city) %>% 
+  summarise(n = n(), avg = mean(abs(.std.resid))) %>% 
+  arrange(desc(n))
+
+models
+
+obs_sum2 <- models2 %>% 
+  augment(mod)
+obs_sum2
+
+obs_sum2 %>% 
+  ggplot(aes((abs(.std.resid)))) +
+  geom_histogram(binwidth = 0.1)
+
+obs_sum2 %>% 
+  filter(abs(.std.resid) > 2) %>% 
+  group_by(city) %>% 
+  summarise(n = n(), avg = mean(abs(.std.resid))) %>% 
+  arrange(desc(n))

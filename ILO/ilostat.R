@@ -37,6 +37,17 @@ total_labor %>%
   geom_point(aes(color=country)) +
   geom_abline()
 
+# 3rd way
+
+total_labor %>% 
+  group_by(country) %>% 
+  filter(n_distinct(time) >= 10) %>% 
+  ggplot(aes(org_rate, cov_rate)) +
+  geom_point(aes(color=country), size=1) +
+  geom_abline() +
+  facet_wrap(~country) +
+  ylab("단체협약 적용률") + xlab("노조조직률")
+
 index_df <- total_labor %>% 
   group_by(country) %>% 
   summarise(count=n()) %>% 

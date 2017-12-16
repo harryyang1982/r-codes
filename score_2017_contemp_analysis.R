@@ -9,7 +9,11 @@ gathered <- score %>%
 
 gathered[gathered$과제순서 %in% c(1,2),]$value <- gathered[gathered$과제순서 %in% c(1,2),]$value * 2
 
-gathered
+top3 <- gathered %>% 
+  group_by(name) %>% 
+  top_n(3, wt = value)
 
 spreaded <- gathered %>% 
   spread(name, value)
+
+top3

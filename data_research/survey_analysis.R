@@ -1,13 +1,13 @@
 library(tidyverse)
 
-glimpse(raw_data)
-
-table(raw_data$q2)
+raw_data <- read_excel("data_research/raw_data.xlsx")
 
 survey <- raw_data
 
 survey <- as.tibble(map(survey, factor))
 str(survey)
+
+# factorize variables
 
 survey_sum <- survey %>% 
   mutate(연령 = fct_recode(연령, 

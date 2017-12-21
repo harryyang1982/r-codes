@@ -77,7 +77,7 @@ survey_sum <- survey %>%
 
 # Make list for iterating variables to draw graphs and make tables
 
-map_ggplot <- list(filler = rep(c("q1", "q2", "q3", "q4", "q5", "q6", "q7", "q8"), each= 3 ),
+map_ggplot <- list(filler = rep(paste0("q", 1:8), each= 3),
      xer = rep(c("연령", "성별", "지역"), 8),
      titles = rep(c("1995년부터 실시된 민선 지방자치에 대해 어떻게 생각하십니까?", 
                 "지방자치단체 권한을 강화하는 소위 분권형 개헌 방안에 대해 어떻게 생각하십니까?",

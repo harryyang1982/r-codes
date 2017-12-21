@@ -75,6 +75,8 @@ survey_sum <- survey %>%
                          "지방의원들로 교육위원회 구성하는 현 체제가 바람직함" = "2",
                          "잘 모르겠음" = "3"))
 
+# Make list for iterating variables to draw graphs and make tables
+
 map_ggplot <- list(filler = rep(c("q1", "q2", "q3", "q4", "q5", "q6", "q7", "q8"), each= 3 ),
      xer = rep(c("연령", "성별", "지역"), 8),
      titles = rep(c("1995년부터 실시된 민선 지방자치에 대해 어떻게 생각하십니까?", 

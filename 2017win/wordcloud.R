@@ -1,8 +1,9 @@
 library(KoNLP)
 library(tidyverse)
 library(wordcloud)
+library(rJava)
 
-thesis <- readLines("2017win/ma_thesis_yang.txt")
+thesis <- readLines("/Users/YangSeunghoon/Documents/R/r-codes/2017win/ma_thesis_yang.txt")
 txt <- sapply(thesis, extractNoun, USE.NAMES = F)
 
 df_txt <- unlist(txt)
